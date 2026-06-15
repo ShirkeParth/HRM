@@ -9,10 +9,15 @@
 <div class="container mt-5">
 
     <h2>Role Dashboard</h2>
-
+<div class="mb-3">
     <a href="{% url 'create_role' %}" class="btn btn-primary mb-3">
         Add Role
     </a>
+    <a href="{% url 'create_department' %}" class="btn btn-primary">
+        Add Department
+    </a>
+</div>
+    
 
     <form method="GET" class="mb-3">
         <input type="text" name="search" placeholder="Search Role" class="form-control">
