@@ -14,10 +14,15 @@
 
 <h2>Department Dashboard</h2>
 
-<a href="{% url 'create_department' %}"
-class="btn btn-success mb-3">
-Create Department
-</a>
+<div class="mb-3">
+    <a href="{% url 'create_department' %}" class="btn btn-primary">
+        Add Department
+    </a>
+
+    <a href="{% url 'role_dashboard' %}" class="btn btn-success">
+        Role Management
+    </a>
+</div>
 
 <form method="GET">
 
