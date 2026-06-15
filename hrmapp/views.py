@@ -5,7 +5,6 @@ from .models import Department, Role
 
 # ---------------- DASHBOARD ----------------
 
-@login_required
 def dashboard(request):
     search = request.GET.get('search')
 
@@ -24,7 +23,7 @@ def dashboard(request):
 
 # ---------------- DEPARTMENT CRUD ----------------
 
-@login_required
+
 def create_department(request):
     if request.method == "POST":
         dept_name = request.POST.get('dept_name')
@@ -39,7 +38,7 @@ def create_department(request):
     return render(request, 'department/create_department.html')
 
 
-@login_required
+
 def update_department(request, id):
     department = Department.objects.get(dept_id=id)
 
@@ -54,7 +53,6 @@ def update_department(request, id):
     })
 
 
-@login_required
 def delete_department(request, id):
     department = Department.objects.get(dept_id=id)
     department.status = False
@@ -64,7 +62,6 @@ def delete_department(request, id):
 
 # ---------------- ROLE DASHBOARD ----------------
 
-@login_required
 def role_dashboard(request):
     search = request.GET.get('search')
 
@@ -83,7 +80,6 @@ def role_dashboard(request):
 
 # ---------------- ROLE CRUD ----------------
 
-@login_required
 def create_role(request):
     if request.method == "POST":
         role_name = request.POST.get('role_name')
@@ -98,7 +94,7 @@ def create_role(request):
     return render(request, 'Role/create_role.html')
 
 
-@login_required
+
 def update_role(request, id):
     role = Role.objects.get(id=id)
 
@@ -113,7 +109,7 @@ def update_role(request, id):
     })
 
 
-@login_required
+
 def delete_role(request, id):
     role = Role.objects.get(id=id)
     role.status = False
