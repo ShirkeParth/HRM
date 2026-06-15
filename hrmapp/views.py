@@ -133,3 +133,11 @@ def delete_role(request, id):
     role.save()
 
     return redirect('role_dashboard')
+
+import os
+from django.conf import settings
+
+def role_dashboard(request):
+    print("BASE_DIR:", settings.BASE_DIR)
+    print("TEMPLATES DIR:", settings.TEMPLATES[0]['DIRS'])
+    return render(request, "role/dashboard.html")
