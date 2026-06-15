@@ -18,7 +18,7 @@ def delete_department(request, id):
     ...
 # Create your views here.
 from django.shortcuts import render, redirect
-from .models import Department
+from .models import Department,Role
 
 
 def dashboard(request):
@@ -72,3 +72,64 @@ def delete_department(request, id):
     department.status = False
     department.save()
     return redirect('dashboard')
+
+def role_dashboard(request):
+    search = request.GET.get('search')
+
+    if search:
+        roles = Role.objects.filter(
+            role_name__icontains=search,
+            status=True
+        )
+    else:
+        roles = Role.objects.filter(status=True)
+
+    context = {
+        'roles': roles
+    }
+
+    return render(request, 'role/dashboard.html', context)
+
+
+def create_role(request):
+    if request.method == "POST":
+        role_name = request.POST.get('role_name')
+        description = request.POST.get('description')
+
+        Role.objects.create(
+            role_name=role_name,
+            description=description
+        )
+
+        return redirect('role_dashboard')
+
+    return render(request, 'role/create_role.html')
+
+
+def update_role(request, id):
+    role = Role.objects.get(id=id)
+
+    if request.method == "POST":
+        role.role_name = request.POST.get('role_name')
+        role.description = request.POST.get('description')
+        role.save()
+
+        return redirect('role_dashboard')
+
+    context = {
+        'role': role
+    }
+
+    return render(
+        request,
+        'role/update_role.html',
+        context
+    )
+
+
+def delete_role(request, id):
+    role = Role.objects.get(id=id)
+    role.status = False
+    role.save()
+
+    return redirect('role_dashboard')
