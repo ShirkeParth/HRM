@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Department, Role
+from .models import Department, Role,Employee
 
 
 # ---------------- DASHBOARD ----------------
@@ -115,3 +115,106 @@ def delete_role(request, id):
     role.status = False
     role.save()
     return redirect('role_dashboard')
+
+def employee_dashboard(request):
+
+    search = request.GET.get('search')
+
+    if search:
+        employees = Employee.objects.filter(
+            first_name__icontains=search,
+            status=True
+        )
+    else:
+        employees = Employee.objects.filter(
+            status=True
+        )
+
+    return render(
+        request,
+        'employee/dashboard.html',
+        {
+            'employees': employees
+        }
+    )
+
+def create_employee(request):
+
+    if request.method == "POST":
+
+        Employee.objects.create(
+            first_name=request.POST.get('first_name'),
+            last_name=request.POST.get('last_name'),
+            email=request.POST.get('email'),
+            mobile=request.POST.get('mobile'),
+            username=request.POST.get('username'),
+            password=request.POST.get('password'),
+            dept_id=request.POST.get('dept'),
+            role_id=request.POST.get('role'),
+            reporting_manager_id=request.POST.get('reporting_manager'),
+            date_of_joining=request.POST.get('date_of_joining')
+        )
+
+        return redirect('employee_dashboard')
+
+    departments = Department.objects.filter(status=True)
+    roles = Role.objects.filter(status=True)
+    managers = Employee.objects.filter(status=True)
+
+    return render(
+        request,
+        'employee/create_employee.html',
+        {
+            'departments': departments,
+            'roles': roles,
+            'managers': managers
+        }
+    )
+
+def update_employee(request, id):
+
+    employee = Employee.objects.get(id=id)
+
+    if request.method == "POST":
+
+        employee.first_name = request.POST.get('first_name')
+        employee.last_name = request.POST.get('last_name')
+        employee.email = request.POST.get('email')
+        employee.mobile = request.POST.get('mobile')
+        employee.username = request.POST.get('username')
+        employee.password = request.POST.get('password')
+
+        employee.dept_id = request.POST.get('dept')
+        employee.role_id = request.POST.get('role')
+        employee.reporting_manager_id = request.POST.get('reporting_manager')
+
+        employee.date_of_joining = request.POST.get('date_of_joining')
+
+        employee.save()
+
+        return redirect('employee_dashboard')
+
+    departments = Department.objects.filter(status=True)
+    roles = Role.objects.filter(status=True)
+    managers = Employee.objects.filter(status=True)
+
+    return render(
+        request,
+        'employee/update_employee.html',
+        {
+            'employee': employee,
+            'departments': departments,
+            'roles': roles,
+            'managers': managers
+        }
+    )
+
+def delete_employee(request, id):
+
+    employee = Employee.objects.get(id=id)
+
+    employee.status = False
+    employee.save()
+
+    return redirect('employee_dashboard')
+

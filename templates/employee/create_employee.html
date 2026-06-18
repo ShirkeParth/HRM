@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Employee</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+
+    <h2>Add Employee</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+                <label>First Name</label>
+                <input type="text"
+                       name="first_name"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Last Name</label>
+                <input type="text"
+                       name="last_name"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Email</label>
+                <input type="email"
+                       name="email"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Mobile</label>
+                <input type="text"
+                       name="mobile"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Department</label>
+                <select name="dept" class="form-control">
+
+                    {% for dept in departments %}
+                    <option value="{{ dept.dept_id }}">
+                        {{ dept.dept_name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Role</label>
+                <select name="role" class="form-control">
+
+                    {% for role in roles %}
+                    <option value="{{ role.id }}">
+                        {{ role.role_name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Reporting Manager</label>
+                <select name="reporting_manager"
+                        class="form-control">
+
+                    <option value="">
+                        Select Manager
+                    </option>
+
+                    {% for manager in managers %}
+                    <option value="{{ manager.id }}">
+                        {{ manager.first_name }}
+                        {{ manager.last_name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Date Of Joining</label>
+                <input type="date"
+                       name="date_of_joining"
+                       class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Username</label>
+                <input type="text"
+                       name="username"
+                       class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Password</label>
+                <input type="password"
+                       name="password"
+                       class="form-control">
+            </div>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-success">
+            Save Employee
+        </button>
+
+        <a href="{% url 'employee_dashboard' %}"
+           class="btn btn-secondary">
+            Back
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>
