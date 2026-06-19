@@ -45,7 +45,12 @@
 <td>{{ a.status }}</td>
 
 <td>{{ a.assigned_date }}</td>
-
+<td>
+    <a href="{% url 'update_assignment' a.id %}"
+       class="btn btn-warning btn-sm">
+       Update
+    </a>
+</td>
 </tr>
 
 {% empty %}

@@ -474,3 +474,153 @@ def assignment_dashboard(request):
             'assignments': assignments
         }
     )
+
+from django.contrib import admin
+from .models import (
+    Department,
+    Role,
+    Employee,
+    OTP,
+    Task,
+    TaskAssignment
+)
+
+# ---------------- DEPARTMENT ----------------
+
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = [
+        'dept_id',
+        'dept_name',
+        'description',
+        'created_at',
+        'updated_at',
+        'status'
+    ]
+
+    search_fields = ['dept_name']
+    list_filter = ['status']
+
+
+# ---------------- ROLE ----------------
+
+class RoleAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'role_name',
+        'description',
+        'created_at',
+        'updated_at',
+        'status'
+    ]
+
+    search_fields = ['role_name']
+    list_filter = ['status']
+
+
+# ---------------- EMPLOYEE ----------------
+
+class EmployeeAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'mobile',
+        'dept',
+        'role',
+        'reporting_manager',
+        'date_of_joining',
+        'status'
+    ]
+
+    search_fields = [
+        'first_name',
+        'last_name',
+        'email'
+    ]
+
+    list_filter = [
+        'dept',
+        'role',
+        'status'
+    ]
+
+
+# ---------------- OTP ----------------
+
+class OTPAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'email',
+        'otp',
+        'created_at'
+    ]
+
+    search_fields = ['email']
+
+
+# ---------------- TASK ----------------
+
+class TaskAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'task_title',
+        'task_priority',
+        'start_date',
+        'end_date',
+        'task_type',
+        'created_at',
+        'updated_at'
+    ]
+
+    search_fields = [
+        'task_title',
+        'task_description'
+    ]
+
+    list_filter = [
+        'task_priority',
+        'task_type'
+    ]
+
+
+# ---------------- TASK ASSIGNMENT ----------------
+
+class TaskAssignmentAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'task',
+        'employee',
+        'status',
+        'assigned_date'
+    ]
+
+    search_fields = [
+        'task__task_title',
+        'employee__first_name',
+        'employee__last_name'
+    ]
+
+    list_filter = [
+        'status',
+        'assigned_date'
+    ]
+
+def update_assignment(request, id):
+
+    assignment = TaskAssignment.objects.get(id=id)
+
+    if request.method == "POST":
+
+        assignment.status = request.POST.get('status')
+        assignment.save()
+
+        return redirect('assignment_dashboard')
+
+    return render(
+        request,
+        'task/update_assignment.html',
+        {
+            'assignment': assignment
+        }
+    )
