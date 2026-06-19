@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Department, Role,Employee
 from django.contrib import messages
 from django.core.mail import send_mail
 from .models import OTP
 import random
-
+from .models import Task
+from .models import Department, Role, Employee, Task, TaskAssignment
 # ---------------- DASHBOARD ----------------
 
 def dashboard(request):
@@ -366,3 +366,111 @@ def logout_view(request):
     request.session.flush()
     messages.success(request, "Logged out successfully.")
     return redirect('login')
+
+def create_task(request):
+
+    if request.method == "POST":
+
+        Task.objects.create(
+            task_title=request.POST.get('task_title'),
+            task_description=request.POST.get('task_description'),
+            task_priority=request.POST.get('task_priority'),
+            start_date=request.POST.get('start_date'),
+            end_date=request.POST.get('end_date'),
+            task_type=request.POST.get('task_type')
+        )
+
+        return redirect('task_dashboard')
+
+    return render(
+        request,
+        'task/create_task.html'
+    )
+
+def task_dashboard(request):
+
+    tasks = Task.objects.all()
+
+    return render(
+        request,
+        'task/dashboard.html',
+        {
+            'tasks': tasks
+        }
+    )
+
+def assign_task(request):
+
+    if request.method == "POST":
+
+        TaskAssignment.objects.create(
+
+            task_id=request.POST.get('task'),
+
+            employee_id=request.POST.get('employee')
+
+        )
+
+        return redirect('task_dashboard')
+
+    tasks = Task.objects.all()
+
+    employees = Employee.objects.filter(
+        status=True
+    )
+
+    return render(
+        request,
+        'task/assign_task.html',
+        {
+            'tasks': tasks,
+            'employees': employees
+        }
+    )
+
+def update_task(request, id):
+
+    task = Task.objects.get(id=id)
+
+    if request.method == "POST":
+
+        task.task_title = request.POST.get('task_title')
+        task.task_description = request.POST.get('task_description')
+        task.task_priority = request.POST.get('task_priority')
+        task.start_date = request.POST.get('start_date')
+        task.end_date = request.POST.get('end_date')
+        task.task_type = request.POST.get('task_type')
+
+        task.save()
+
+        return redirect('task_dashboard')
+
+    return render(
+        request,
+        'task/update_task.html',
+        {
+            'task': task
+        }
+    )
+
+def delete_task(request, id):
+
+    task = Task.objects.get(id=id)
+
+    task.delete()
+
+    return redirect(
+        'task_dashboard'
+    )
+
+def assignment_dashboard(request):
+
+    assignments = TaskAssignment.objects.all()
+
+    return render(
+        request,
+        'task/assignment_dashboard.html',
+        {
+            'assignments': assignments
+        }
+    )

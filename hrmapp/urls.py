@@ -22,4 +22,10 @@ urlpatterns = [
     path('verify-otp/', views.verify_otp,name='verify_otp'),
     path('reset-password/',views.reset_password,name='reset_password'),
     path('logout/', views.logout_view, name='logout'),
+    path('task/create/',views.create_task,name='create_task'),
+    path('tasks/', views.task_dashboard, name='task_dashboard'),
+    path('task/assign/', views.assign_task,name='assign_task'),
+    path('task/update/<int:id>/',views.update_task,name='update_task'),
+    path('task/delete/<int:id>/',views.delete_task, name='delete_task'),
+    path('assignments/', views.assignment_dashboard,name='assignment_dashboard'),
 ]

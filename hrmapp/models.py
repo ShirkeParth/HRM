@@ -74,3 +74,47 @@ class OTP(models.Model):
 
     def __str__(self):
         return self.email
+    
+class Task(models.Model):
+    task_title = models.CharField(max_length=100)
+    task_description = models.CharField(max_length=300)
+    task_priority = models.CharField(max_length=20)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    task_type = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.task_title
+    
+class TaskAssignment(models.Model):
+
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('In Progress', 'In Progress'),
+        ('Completed', 'Completed')
+    ]
+
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE
+    )
+
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='Pending'
+    )
+
+    assigned_date = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.task} - {self.employee}"
