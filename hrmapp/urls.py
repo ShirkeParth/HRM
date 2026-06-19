@@ -17,4 +17,9 @@ urlpatterns = [
     path('create_employee/',views.create_employee, name='create_employee'),
     path('update_employee/<int:id>/',views.update_employee,name='update_employee'),
     path('delete_employee/<int:id>/', views.delete_employee,  name='delete_employee'),
+    path( 'login/', views.login_view,name='login'),
+    path( 'forgot-password/', views.forgot_password,  name='forgot_password'),
+    path('verify-otp/', views.verify_otp,name='verify_otp'),
+    path('reset-password/',views.reset_password,name='reset_password'),
+    path('logout/', views.logout_view, name='logout'),
 ]

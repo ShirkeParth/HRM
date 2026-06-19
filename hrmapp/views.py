@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Department, Role,Employee
-
+from django.contrib import messages
+from django.core.mail import send_mail
+from .models import OTP
+import random
 
 # ---------------- DASHBOARD ----------------
 
@@ -218,3 +221,148 @@ def delete_employee(request, id):
 
     return redirect('employee_dashboard')
 
+def login_view(request):
+
+    if request.method == "POST":
+
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            employee = Employee.objects.get(
+                username=username,
+                password=password,
+                status=True
+            )
+
+            request.session['employee_id'] = employee.id
+
+            return redirect('dashboard')
+
+        except Employee.DoesNotExist:
+
+            messages.error(
+                request,
+                "Invalid Username or Password"
+            )
+
+    return render(
+        request,
+        'auth/login.html'
+    )
+
+def forgot_password(request):
+
+    if request.method == "POST":
+
+        email = request.POST.get('email')
+
+        try:
+
+            employee = Employee.objects.get(
+                email=email
+            )
+
+            otp = str(random.randint(100000,999999))
+
+            OTP.objects.create(
+                email=email,
+                otp=otp
+            )
+
+            send_mail(
+                'HRM Password Reset OTP',
+                f'Your OTP is {otp}',
+                'yourgmail@gmail.com',
+                [email],
+                fail_silently=False
+            )
+
+            request.session['reset_email'] = email
+
+            return redirect('verify_otp')
+
+        except Employee.DoesNotExist:
+
+            messages.error(
+                request,
+                "Email not found"
+            )
+
+    return render(
+        request,
+        'auth/forgot_password.html'
+    )
+
+def verify_otp(request):
+
+    if request.method == "POST":
+
+        otp = request.POST.get('otp')
+
+        email = request.session.get(
+            'reset_email'
+        )
+
+        try:
+
+            OTP.objects.filter(
+                email=email,
+                otp=otp
+            ).latest('created_at')
+
+            return redirect(
+                'reset_password'
+            )
+
+        except:
+
+            messages.error(
+                request,
+                "Invalid OTP"
+            )
+
+    return render(
+        request,
+        'auth/verify_otp.html'
+    )
+
+def reset_password(request):
+
+    if request.method == "POST":
+
+        new_password = request.POST.get(
+            'password'
+        )
+
+        email = request.session.get(
+            'reset_email'
+        )
+
+        employee = Employee.objects.get(
+            email=email
+        )
+
+        employee.password = new_password
+        employee.save()
+
+        messages.success(
+            request,
+            "Password Updated Successfully"
+        )
+
+        return redirect(
+            'login'
+        )
+
+    return render(
+        request,
+        'auth/reset_password.html'
+    )
+
+from django.contrib import messages
+
+def logout_view(request):
+    request.session.flush()
+    messages.success(request, "Logged out successfully.")
+    return redirect('login')
