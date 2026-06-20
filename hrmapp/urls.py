@@ -29,4 +29,27 @@ urlpatterns = [
     path('task/delete/<int:id>/',views.delete_task, name='delete_task'),
     path('assignments/', views.assignment_dashboard,name='assignment_dashboard'),
     path('assignment/update/<int:id>/', views.update_assignment, name='update_assignment'),
+ path(
+    'reviews/',
+    views.review_dashboard,
+    name='review_dashboard'
+),
+
+path(
+    'review/create/',
+    views.add_review,
+    name='add_review'
+),
+
+path(
+    'review/update/<int:id>/',
+    views.update_review,
+    name='update_review'
+),
+
+path(
+    'review/delete/<int:id>/',
+    views.delete_review,
+    name='delete_review'
+),
 ]

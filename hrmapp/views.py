@@ -6,6 +6,9 @@ from .models import OTP
 import random
 from .models import Task
 from .models import Department, Role, Employee, Task, TaskAssignment
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import PerformanceReview
+from .forms import PerformanceReviewForm
 # ---------------- DASHBOARD ----------------
 
 def dashboard(request):
@@ -624,3 +627,118 @@ def update_assignment(request, id):
             'assignment': assignment
         }
     )
+
+def add_review(request):
+
+    employee_id = request.session.get('employee_id')
+
+    if not employee_id:
+        return redirect('login')
+
+    try:
+        current_employee = Employee.objects.get(
+            id=employee_id
+        )
+    except Employee.DoesNotExist:
+        return redirect('login')
+
+    if request.method == "POST":
+
+        PerformanceReview.objects.create(
+            review_title=request.POST.get('review_title'),
+            review_date=request.POST.get('review_date'),
+            employee_id=request.POST.get('employee'),
+            reviewed_by=current_employee,
+            review_period=request.POST.get('review_period'),
+            rating=request.POST.get('rating'),
+            comments=request.POST.get('comments')
+        )
+
+        return redirect('review_dashboard')
+
+    employees = Employee.objects.filter(status=True)
+
+    return render(
+        request,
+        'review/add_review.html',
+        {
+            'employees': employees
+        }
+    )
+
+def review_dashboard(request):
+
+    reviews = PerformanceReview.objects.all()
+
+    search = request.GET.get('search')
+    period = request.GET.get('period')
+
+    if search:
+        reviews = reviews.filter(
+            review_title__icontains=search
+        )
+
+    if period:
+        reviews = reviews.filter(
+            review_period=period
+        )
+
+    total_reviews = PerformanceReview.objects.count()
+
+    monthly_reviews = PerformanceReview.objects.filter(
+        review_period='Monthly'
+    ).count()
+
+    quarterly_reviews = PerformanceReview.objects.filter(
+        review_period='Quarterly'
+    ).count()
+
+    annual_reviews = PerformanceReview.objects.filter(
+        review_period='Annual'
+    ).count()
+
+    return render(
+        request,
+        'review/dashboard.html',
+        {
+            'reviews': reviews,
+            'total_reviews': total_reviews,
+            'monthly_reviews': monthly_reviews,
+            'quarterly_reviews': quarterly_reviews,
+            'annual_reviews': annual_reviews,
+        }
+    )
+
+def update_review(request, id):
+
+    review = PerformanceReview.objects.get(id=id)
+
+    if request.method == "POST":
+
+        review.review_title = request.POST.get('review_title')
+        review.review_date = request.POST.get('review_date')
+        review.review_period = request.POST.get('review_period')
+        review.rating = request.POST.get('rating')
+        review.comments = request.POST.get('comments')
+
+        review.save()
+
+        return redirect('review_dashboard')
+
+    return render(
+        request,
+        'review/update_review.html',
+        {
+            'review': review
+        }
+    )
+def delete_review(request, id):
+
+    review = get_object_or_404(
+        PerformanceReview,
+        id=id
+    )
+
+    review.delete()
+
+    return redirect('review_dashboard')

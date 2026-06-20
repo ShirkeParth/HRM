@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Performance Review Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="container mt-5">
+
+        <h2>Performance Review Dashboard</h2>
+
+        <!-- Statistics Cards -->
+
+        <div class="row mb-4">
+
+            <div class="col-md-3">
+
+                <div class="card text-center">
+
+                    <div class="card-body">
+
+                        <h5>Total Reviews</h5>
+
+                        <h2>{{ total_reviews }}</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card text-center">
+
+                    <div class="card-body">
+
+                        <h5>Monthly</h5>
+
+                        <h2>{{ monthly_reviews }}</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card text-center">
+
+                    <div class="card-body">
+
+                        <h5>Quarterly</h5>
+
+                        <h2>{{ quarterly_reviews }}</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card text-center">
+
+                    <div class="card-body">
+
+                        <h5>Annual</h5>
+
+                        <h2>{{ annual_reviews }}</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+
+        <div class="mb-3">
+
+            <a href="{% url 'add_review' %}" class="btn btn-primary">
+                Add Review
+            </a>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+        <!-- Search & Filter -->
+
+        <form method="GET">
+
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request.GET.search }}"
+                        class="form-control"
+                        placeholder="Search Review Title">
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <select
+                        name="period"
+                        class="form-control">
+
+                        <option value="">
+                            All Reviews
+                        </option>
+
+                        <option value="Monthly">
+                            Monthly
+                        </option>
+
+                        <option value="Quarterly">
+                            Quarterly
+                        </option>
+
+                        <option value="Annual">
+                            Annual
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <button class="btn btn-success">
+                        Filter
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <!-- Table -->
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Employee</th>
+                    <th>Review Title</th>
+                    <th>Review Date</th>
+                    <th>Reviewed By</th>
+                    <th>Review Period</th>
+                    <th>Rating</th>
+                    <th>Comments</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for review in reviews %}
+
+                <tr>
+
+                    <td>{{ review.id }}</td>
+
+                    <td>
+                        {{ review.employee.first_name }}
+                        {{ review.employee.last_name }}
+                    </td>
+
+                    <td>{{ review.review_title }}</td>
+
+                    <td>{{ review.review_date }}</td>
+
+                    <td>
+                        {{ review.reviewed_by.first_name }}
+                        {{ review.reviewed_by.last_name }}
+                    </td>
+
+                    <td>{{ review.review_period }}</td>
+
+                    <td>{{ review.rating }}</td>
+
+                    <td>{{ review.comments }}</td>
+
+                    <td>
+
+                        <a href="{% url 'update_review' review.id %}"
+                           class="btn btn-warning btn-sm">
+
+                            Edit
+
+                        </a>
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'delete_review' review.id %}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure?')">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="10" class="text-center">
+
+                        No Reviews Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</body>
+
+</html>

@@ -118,3 +118,42 @@ class TaskAssignment(models.Model):
 
     def __str__(self):
         return f"{self.task} - {self.employee}"
+    
+class PerformanceReview(models.Model):
+
+    PERIOD_CHOICES = [
+        ('Monthly', 'Monthly'),
+        ('Quarterly', 'Quarterly'),
+        ('Annual', 'Annual'),
+    ]
+
+    review_title = models.CharField(max_length=100)
+    review_date = models.DateField()
+
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+
+    reviewed_by = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE,
+        related_name='given_reviews'
+    )
+
+    review_period = models.CharField(
+        max_length=20,
+        choices=PERIOD_CHOICES
+    )
+
+    rating = models.IntegerField()
+
+    comments = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.review_title

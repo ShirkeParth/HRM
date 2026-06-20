@@ -1,0 +1,97 @@
+
+<div class="container mt-4">
+
+<h2>Add Review</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="mb-3">
+<label>Review Title</label>
+<input type="text"
+name="review_title"
+class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Select Employee</label>
+
+<select
+name="employee"
+class="form-control">
+
+{% for emp in employees %}
+
+<option value="{{ emp.id }}">
+{{ emp.first_name }}
+{{ emp.last_name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+<div class="mb-3">
+<label>Review Date</label>
+
+<input
+type="date"
+name="review_date"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+<label>Review Period</label>
+
+<select
+name="review_period"
+class="form-control">
+
+<option>Monthly</option>
+<option>Quarterly</option>
+<option>Annual</option>
+
+</select>
+
+</div>
+
+<div class="mb-3">
+
+<label>Rating</label>
+
+<input
+type="number"
+min="1"
+max="10"
+name="rating"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label>Comments</label>
+
+<textarea
+name="comments"
+class="form-control">
+
+</textarea>
+
+</div>
+
+<button
+class="btn btn-primary">
+
+Add Review
+
+</button>
+
+</form>
+
+</div>
+
