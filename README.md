@@ -1,7 +1,6 @@
 # Human Resource Management System (HRMS)
-**FOR LOGIN USE
-username : parth
-password :  123456789
+**INFORMATION MAIN
+ITS ALREADY LOGIN FIRST, YOU HAVE TO CREATE EMPLOYEE AND THROUGH EMPLOYEE YOU CAN LOGIN OR LOGOUT !!!
 ## Project Overview
 
 The Human Resource Management System (HRMS) is a web-based application developed using Django and MySQL to automate and manage various HR operations within an organization.
