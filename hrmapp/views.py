@@ -6,6 +6,10 @@ from .models import OTP
 import random
 from .models import Task
 from .models import Department, Role, Employee, Task, TaskAssignment
+from .models import Leave
+from .models import LeaveQuota
+from django.core.paginator import Paginator
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import PerformanceReview
 from .forms import PerformanceReviewForm
@@ -742,3 +746,336 @@ def delete_review(request, id):
     review.delete()
 
     return redirect('review_dashboard')
+
+def leave_dashboard(request):
+
+    employee_id = request.session.get('employee_id')
+
+    if not employee_id:
+        return redirect('login')
+
+    employee = Employee.objects.get(id=employee_id)
+
+    leaves = Leave.objects.filter(
+        employee=employee
+    )
+
+    quotas = LeaveQuota.objects.filter(
+        employee=employee
+    )
+
+    return render(
+        request,
+        'leave/dashboard.html',
+        {
+            'leaves': leaves,
+            'quotas': quotas
+        }
+    )
+
+from datetime import datetime
+def apply_leave(request):
+
+    employee_id = request.session.get('employee_id')
+
+    if not employee_id:
+        return redirect('login')
+
+    employee = Employee.objects.get(
+        id=employee_id
+    )
+
+    if request.method == "POST":
+
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        start = datetime.strptime(
+            start_date,
+            '%Y-%m-%d'
+        )
+
+        end = datetime.strptime(
+            end_date,
+            '%Y-%m-%d'
+        )
+
+        total_days = (
+            end - start
+        ).days + 1
+
+        Leave.objects.create(
+            employee=employee,
+            leave_type=request.POST.get('leave_type'),
+            reason=request.POST.get('reason'),
+            start_date=start_date,
+            end_date=end_date,
+            total_days=total_days
+        )
+
+        return redirect(
+            'leave_dashboard'
+        )
+
+    return render(
+        request,
+        'leave/apply_leave.html'
+    )
+
+def update_leave(request, id):
+
+    leave = Leave.objects.get(id=id)
+
+    if request.method == "POST":
+
+        leave.leave_type = request.POST.get('leave_type')
+        leave.reason = request.POST.get('reason')
+        leave.start_date = request.POST.get('start_date')
+        leave.end_date = request.POST.get('end_date')
+
+        leave.save()
+
+        return redirect('leave_dashboard')
+
+    return render(
+        request,
+        'leave/update_leave.html',
+        {
+            'leave': leave
+        }
+    )
+def approve_leave(request, id):
+
+    return redirect('leave_dashboard')
+def leave_quota_dashboard(request):
+
+    return render(
+        request,
+        'leave/leave_quota.html'
+    )
+
+
+def update_leave(request, id):
+
+    leave = Leave.objects.get(id=id)
+
+    if leave.status != 'Pending':
+        return redirect('leave_dashboard')
+
+    if request.method == "POST":
+
+        leave.leave_type = request.POST.get('leave_type')
+        leave.reason = request.POST.get('reason')
+        leave.start_date = request.POST.get('start_date')
+        leave.end_date = request.POST.get('end_date')
+
+        leave.save()
+
+        return redirect('leave_dashboard')
+
+    return render(
+        request,
+        'leave/update_leave.html',
+        {
+            'leave': leave
+        }
+    )
+
+def leave_quota_dashboard(request):
+
+    quotas = LeaveQuota.objects.all()
+
+    paginator = Paginator(
+        quotas,
+        5
+    )
+
+    page_number = request.GET.get('page')
+
+    quotas = paginator.get_page(
+        page_number
+    )
+
+    return render(
+        request,
+        'leave/leave_quota.html',
+        {
+            'quotas': quotas
+        }
+    )
+
+def update_quota(request, id):
+
+    quota = LeaveQuota.objects.get(id=id)
+
+    if request.method == "POST":
+
+        quota.total_quota = request.POST.get('total_quota')
+        quota.used_quota = request.POST.get('used_quota')
+
+        quota.remain_quota = (
+            float(quota.total_quota)
+            -
+            float(quota.used_quota)
+        )
+
+        quota.save()
+
+        return redirect(
+            'leave_quota_dashboard'
+        )
+
+    return render(
+        request,
+        'leave/update_quota.html',
+        {
+            'quota': quota
+        }
+    )
+
+def approve_leave(request, id):
+
+    leave = Leave.objects.get(id=id)
+
+    if request.method == "POST":
+
+        action = request.POST.get('status')
+
+        leave.status = action
+
+        employee_id = request.session.get('employee_id')
+
+        if employee_id:
+            leave.approved_by_id = employee_id
+
+        leave.save()
+
+        # Auto Update Leave Quota
+
+        if action == "Approved":
+
+            quota = LeaveQuota.objects.get(
+                employee=leave.employee,
+                leave_type=leave.leave_type
+            )
+
+            quota.used_quota += leave.total_days
+
+            quota.remain_quota = (
+                quota.total_quota -
+                quota.used_quota
+            )
+
+            quota.save()
+
+        return redirect(
+            'manager_leave_dashboard'
+        )
+
+    return render(
+        request,
+        'leave/approve_leave.html',
+        {
+            'leave': leave
+        }
+    )
+
+def add_leave_quota(request):
+
+    if request.method == "POST":
+
+        employee_id = request.POST.get('employee')
+
+        leave_type = request.POST.get('leave_type')
+
+        total_quota = float(
+            request.POST.get('total_quota')
+        )
+
+        LeaveQuota.objects.create(
+            employee_id=employee_id,
+            leave_type=leave_type,
+            total_quota=total_quota,
+            used_quota=0,
+            remain_quota=total_quota
+        )
+
+        return redirect(
+            'leave_quota_dashboard'
+        )
+
+    employees = Employee.objects.all()
+
+    return render(
+        request,
+        'leave/add_leave_quota.html',
+        {
+            'employees': employees
+        }
+    )
+
+def manager_leave_dashboard(request):
+
+    leaves = Leave.objects.all()
+
+    return render(
+        request,
+        'leave/manager_dashboard.html',
+        {
+            'leaves': leaves
+        }
+    )
+
+def leave_dashboard(request):
+
+    employee_id = request.session.get('employee_id')
+
+    if not employee_id:
+        return redirect('login')
+
+    employee = Employee.objects.get(
+        id=employee_id
+    )
+
+    leaves = Leave.objects.filter(
+        employee=employee
+    )
+
+    search = request.GET.get('search')
+
+    if search:
+
+        leaves = leaves.filter(
+            leave_type__icontains=search
+        )
+
+    quotas = LeaveQuota.objects.filter(
+        employee=employee
+    )
+
+    total_leave = leaves.count()
+
+    approved_leave = leaves.filter(
+        status='Approved'
+    ).count()
+
+    pending_leave = leaves.filter(
+        status='Pending'
+    ).count()
+
+    rejected_leave = leaves.filter(
+        status='Rejected'
+    ).count()
+
+    return render(
+        request,
+        'leave/dashboard.html',
+        {
+            'leaves': leaves,
+            'quotas': quotas,
+            'total_leave': total_leave,
+            'approved_leave': approved_leave,
+            'pending_leave': pending_leave,
+            'rejected_leave': rejected_leave,
+        }
+    )

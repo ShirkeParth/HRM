@@ -1,12 +1,17 @@
 from django.contrib import admin
+
 from .models import (
     Department,
     Role,
     Employee,
     OTP,
     Task,
-    TaskAssignment
+    TaskAssignment,
+    PerformanceReview,
+    Leave,
+    LeaveQuota
 )
+
 
 # ---------------- DEPARTMENT ----------------
 
@@ -134,7 +139,78 @@ class TaskAssignmentAdmin(admin.ModelAdmin):
         'status',
         'assigned_date'
     ]
-    from django.contrib import admin
-from .models import PerformanceReview
 
-admin.site.register(PerformanceReview)
+
+# ---------------- PERFORMANCE REVIEW ----------------
+
+@admin.register(PerformanceReview)
+class PerformanceReviewAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'review_title',
+        'employee',
+        'reviewed_by',
+        'review_period',
+        'rating',
+        'review_date'
+    ]
+
+    search_fields = [
+        'review_title',
+        'employee__first_name',
+        'employee__last_name'
+    ]
+
+    list_filter = [
+        'review_period',
+        'review_date'
+    ]
+
+
+# ---------------- LEAVE ----------------
+
+@admin.register(Leave)
+class LeaveAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'employee',
+        'leave_type',
+        'start_date',
+        'end_date',
+        'total_days',
+        'status',
+        'approved_by'
+    ]
+
+    search_fields = [
+        'employee__first_name',
+        'employee__last_name'
+    ]
+
+    list_filter = [
+        'leave_type',
+        'status'
+    ]
+
+
+# ---------------- LEAVE QUOTA ----------------
+
+@admin.register(LeaveQuota)
+class LeaveQuotaAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'employee',
+        'leave_type',
+        'total_quota',
+        'used_quota',
+        'remain_quota'
+    ]
+
+    search_fields = [
+        'employee__first_name',
+        'employee__last_name'
+    ]
+
+    list_filter = [
+        'leave_type'
+    ]

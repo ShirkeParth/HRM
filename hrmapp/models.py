@@ -157,3 +157,87 @@ class PerformanceReview(models.Model):
 
     def __str__(self):
         return self.review_title
+    
+class LeaveQuota(models.Model):
+
+    LEAVE_TYPES = [
+        ('PL', 'PL'),
+        ('CL', 'CL'),
+        ('SL', 'SL'),
+    ]
+
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE
+    )
+
+    leave_type = models.CharField(
+        max_length=10,
+        choices=LEAVE_TYPES
+    )
+
+    total_quota = models.FloatField()
+
+    used_quota = models.FloatField(
+        default=0
+    )
+
+    remain_quota = models.FloatField()
+
+    def __str__(self):
+        return f"{self.employee} - {self.leave_type}"
+
+
+class Leave(models.Model):
+
+    LEAVE_TYPES = [
+        ('PL', 'PL'),
+        ('CL', 'CL'),
+        ('SL', 'SL'),
+    ]
+
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE,
+        related_name='leave_requests'
+    )
+
+    leave_type = models.CharField(
+        max_length=10,
+        choices=LEAVE_TYPES
+    )
+
+    reason = models.TextField()
+
+    start_date = models.DateField()
+
+    end_date = models.DateField()
+
+    total_days = models.IntegerField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='Pending'
+    )
+
+    approved_by = models.ForeignKey(
+        Employee,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='approved_leaves'
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.employee} - {self.leave_type}"

@@ -52,4 +52,51 @@ path(
     views.delete_review,
     name='delete_review'
 ),
+# Leave Management
+
+path(
+    'leave/',
+    views.leave_dashboard,
+    name='leave_dashboard'
+),
+
+path(
+    'leave/apply/',
+    views.apply_leave,
+    name='apply_leave'
+),
+
+path(
+    'leave/update/<int:id>/',
+    views.update_leave,
+    name='update_leave'
+),
+
+path(
+    'leave/approve/<int:id>/',
+    views.approve_leave,
+    name='approve_leave'
+),
+
+path(
+    'quota/',
+    views.leave_quota_dashboard,
+    name='leave_quota_dashboard'
+),
+
+path(
+    'quota/update/<int:id>/',
+    views.update_quota,
+    name='update_quota'
+),
+path(
+    'quota/add/',
+    views.add_leave_quota,
+    name='add_leave_quota'
+),
+path(
+    'leave/manager/',
+    views.manager_leave_dashboard,
+    name='manager_leave_dashboard'
+),
 ]
