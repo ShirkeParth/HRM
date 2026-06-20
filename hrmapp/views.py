@@ -1,38 +1,83 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail
-from .models import OTP
-import random
-from .models import Task
-from .models import Department, Role, Employee, Task, TaskAssignment
-from .models import Leave
-from .models import LeaveQuota
 from django.core.paginator import Paginator
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import PerformanceReview
+import random
+
+from .models import (
+    Department,
+    Role,
+    Employee,
+    OTP,
+    Task,
+    TaskAssignment,
+    PerformanceReview,
+    Leave,
+    LeaveQuota
+)
+
 from .forms import PerformanceReviewForm
 # ---------------- DASHBOARD ----------------
 
 def dashboard(request):
+
+    department_count = Department.objects.filter(
+        status=True
+    ).count()
+
+    role_count = Role.objects.filter(
+        status=True
+    ).count()
+
+    employee_count = Employee.objects.filter(
+        status=True
+    ).count()
+
+    task_count = Task.objects.count()
+
+    review_count = PerformanceReview.objects.count()
+
+    leave_count = Leave.objects.count()
+
+    return render(
+        request,
+        'dashboard.html',
+        {
+            'department_count': department_count,
+            'role_count': role_count,
+            'employee_count': employee_count,
+            'task_count': task_count,
+            'review_count': review_count,
+            'leave_count': leave_count,
+        }
+    )
+# ---------------- DEPARTMENT CRUD ----------------
+def department_dashboard(request):
+
     search = request.GET.get('search')
 
     if search:
+
         departments = Department.objects.filter(
             dept_name__icontains=search,
             status=True
         )
+
     else:
-        departments = Department.objects.filter(status=True)
 
-    return render(request, 'department/dashboard.html', {
-        'departments': departments
-    })
+        departments = Department.objects.filter(
+            status=True
+        )
 
-
-# ---------------- DEPARTMENT CRUD ----------------
-
+    return render(
+        request,
+        'department/dashboard.html',
+        {
+            'departments': departments
+        }
+    )
 
 def create_department(request):
     if request.method == "POST":
@@ -367,7 +412,6 @@ def reset_password(request):
         'auth/reset_password.html'
     )
 
-from django.contrib import messages
 
 def logout_view(request):
     request.session.flush()
@@ -482,136 +526,7 @@ def assignment_dashboard(request):
         }
     )
 
-from django.contrib import admin
-from .models import (
-    Department,
-    Role,
-    Employee,
-    OTP,
-    Task,
-    TaskAssignment
-)
 
-# ---------------- DEPARTMENT ----------------
-
-class DepartmentAdmin(admin.ModelAdmin):
-    list_display = [
-        'dept_id',
-        'dept_name',
-        'description',
-        'created_at',
-        'updated_at',
-        'status'
-    ]
-
-    search_fields = ['dept_name']
-    list_filter = ['status']
-
-
-# ---------------- ROLE ----------------
-
-class RoleAdmin(admin.ModelAdmin):
-    list_display = [
-        'id',
-        'role_name',
-        'description',
-        'created_at',
-        'updated_at',
-        'status'
-    ]
-
-    search_fields = ['role_name']
-    list_filter = ['status']
-
-
-# ---------------- EMPLOYEE ----------------
-
-class EmployeeAdmin(admin.ModelAdmin):
-    list_display = [
-        'id',
-        'first_name',
-        'last_name',
-        'email',
-        'mobile',
-        'dept',
-        'role',
-        'reporting_manager',
-        'date_of_joining',
-        'status'
-    ]
-
-    search_fields = [
-        'first_name',
-        'last_name',
-        'email'
-    ]
-
-    list_filter = [
-        'dept',
-        'role',
-        'status'
-    ]
-
-
-# ---------------- OTP ----------------
-
-class OTPAdmin(admin.ModelAdmin):
-    list_display = [
-        'id',
-        'email',
-        'otp',
-        'created_at'
-    ]
-
-    search_fields = ['email']
-
-
-# ---------------- TASK ----------------
-
-class TaskAdmin(admin.ModelAdmin):
-    list_display = [
-        'id',
-        'task_title',
-        'task_priority',
-        'start_date',
-        'end_date',
-        'task_type',
-        'created_at',
-        'updated_at'
-    ]
-
-    search_fields = [
-        'task_title',
-        'task_description'
-    ]
-
-    list_filter = [
-        'task_priority',
-        'task_type'
-    ]
-
-
-# ---------------- TASK ASSIGNMENT ----------------
-
-class TaskAssignmentAdmin(admin.ModelAdmin):
-    list_display = [
-        'id',
-        'task',
-        'employee',
-        'status',
-        'assigned_date'
-    ]
-
-    search_fields = [
-        'task__task_title',
-        'employee__first_name',
-        'employee__last_name'
-    ]
-
-    list_filter = [
-        'status',
-        'assigned_date'
-    ]
 
 def update_assignment(request, id):
 

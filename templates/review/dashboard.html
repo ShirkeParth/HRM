@@ -3,81 +3,85 @@
 
 <head>
 
-    <title>Performance Review Dashboard</title>
+    <title>Performance Review Management</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#f4f6f9;
+        }
+
+        .header-box{
+            background:white;
+            padding:20px;
+            border-radius:12px;
+            box-shadow:0px 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card{
+            border:none;
+            border-radius:12px;
+            box-shadow:0px 2px 10px rgba(0,0,0,0.1);
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-    <div class="container mt-5">
+<div class="container mt-4">
 
-        <h2>Performance Review Dashboard</h2>
+    <!-- Header -->
 
-        <!-- Statistics Cards -->
+    <div class="header-box mb-4">
 
-        <div class="row mb-4">
+        <div class="d-flex justify-content-between align-items-center">
 
-            <div class="col-md-3">
+            <div>
 
-                <div class="card text-center">
+                <h2>Performance Review Management</h2>
 
-                    <div class="card-body">
-
-                        <h5>Total Reviews</h5>
-
-                        <h2>{{ total_reviews }}</h2>
-
-                    </div>
-
-                </div>
+                <p class="text-muted mb-0">
+                    Monitor employee performance and review history
+                </p>
 
             </div>
 
-            <div class="col-md-3">
+            <div>
 
-                <div class="card text-center">
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-secondary">
+                    HRM Dashboard
+                </a>
 
-                    <div class="card-body">
-
-                        <h5>Monthly</h5>
-
-                        <h2>{{ monthly_reviews }}</h2>
-
-                    </div>
-
-                </div>
+                <a href="{% url 'logout' %}"
+                   class="btn btn-danger">
+                    Logout
+                </a>
 
             </div>
 
-            <div class="col-md-3">
+        </div>
 
-                <div class="card text-center">
+    </div>
 
-                    <div class="card-body">
+    <!-- Statistics -->
 
-                        <h5>Quarterly</h5>
+    <div class="row mb-4">
 
-                        <h2>{{ quarterly_reviews }}</h2>
+        <div class="col-md-3">
 
-                    </div>
+            <div class="card text-center">
 
-                </div>
+                <div class="card-body">
 
-            </div>
+                    <h5>Total Reviews</h5>
 
-            <div class="col-md-3">
-
-                <div class="card text-center">
-
-                    <div class="card-body">
-
-                        <h5>Annual</h5>
-
-                        <h2>{{ annual_reviews }}</h2>
-
-                    </div>
+                    <h2>{{ total_reviews }}</h2>
 
                 </div>
 
@@ -85,170 +89,269 @@
 
         </div>
 
-        <!-- Buttons -->
+        <div class="col-md-3">
 
-        <div class="mb-3">
+            <div class="card text-center">
 
-            <a href="{% url 'add_review' %}" class="btn btn-primary">
+                <div class="card-body">
+
+                    <h5>Monthly Reviews</h5>
+
+                    <h2>{{ monthly_reviews }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card text-center">
+
+                <div class="card-body">
+
+                    <h5>Quarterly Reviews</h5>
+
+                    <h2>{{ quarterly_reviews }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card text-center">
+
+                <div class="card-body">
+
+                    <h5>Annual Reviews</h5>
+
+                    <h2>{{ annual_reviews }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="card mb-4">
+
+        <div class="card-body">
+
+            <a href="{% url 'add_review' %}"
+               class="btn btn-primary">
                 Add Review
             </a>
 
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-                Back to Dashboard
+            <a href="{% url 'employee_dashboard' %}"
+               class="btn btn-success">
+                Employees
             </a>
 
         </div>
 
-        <!-- Search & Filter -->
+    </div>
 
-        <form method="GET">
+    <!-- Search -->
 
-            <div class="row mb-3">
+    <div class="card mb-4">
 
-                <div class="col-md-4">
+        <div class="card-body">
 
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request.GET.search }}"
-                        class="form-control"
-                        placeholder="Search Review Title">
+            <form method="GET">
+
+                <div class="row">
+
+                    <div class="col-md-5">
+
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ request.GET.search }}"
+                            class="form-control"
+                            placeholder="Search Review Title">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <select
+                            name="period"
+                            class="form-control">
+
+                            <option value="">
+                                All Reviews
+                            </option>
+
+                            <option value="Monthly">
+                                Monthly
+                            </option>
+
+                            <option value="Quarterly">
+                                Quarterly
+                            </option>
+
+                            <option value="Annual">
+                                Annual
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button class="btn btn-success w-100">
+
+                            Search / Filter
+
+                        </button>
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-4">
+            </form>
 
-                    <select
-                        name="period"
-                        class="form-control">
+        </div>
 
-                        <option value="">
-                            All Reviews
-                        </option>
+    </div>
 
-                        <option value="Monthly">
-                            Monthly
-                        </option>
+    <!-- Table -->
 
-                        <option value="Quarterly">
-                            Quarterly
-                        </option>
+    <div class="card">
 
-                        <option value="Annual">
-                            Annual
-                        </option>
+        <div class="card-body">
 
-                    </select>
+            <h4 class="mb-3">
+                Review Records
+            </h4>
 
-                </div>
+            <div class="table-responsive">
 
-                <div class="col-md-4">
+                <table class="table table-bordered table-hover">
 
-                    <button class="btn btn-success">
-                        Filter
-                    </button>
+                    <thead class="table-dark">
 
-                </div>
+                        <tr>
+
+                            <th>ID</th>
+                            <th>Employee</th>
+                            <th>Review Title</th>
+                            <th>Date</th>
+                            <th>Reviewed By</th>
+                            <th>Period</th>
+                            <th>Rating</th>
+                            <th>Comments</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for review in reviews %}
+
+                        <tr>
+
+                            <td>{{ review.id }}</td>
+
+                            <td>
+                                {{ review.employee.first_name }}
+                                {{ review.employee.last_name }}
+                            </td>
+
+                            <td>{{ review.review_title }}</td>
+
+                            <td>{{ review.review_date }}</td>
+
+                            <td>
+                                {{ review.reviewed_by.first_name }}
+                                {{ review.reviewed_by.last_name }}
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-primary">
+
+                                    {{ review.review_period }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    {{ review.rating }}/10
+
+                                </span>
+
+                            </td>
+
+                            <td>{{ review.comments }}</td>
+
+                            <td>
+
+                                <a href="{% url 'update_review' review.id %}"
+                                   class="btn btn-warning btn-sm">
+
+                                    Edit
+
+                                </a>
+
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'delete_review' review.id %}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete this review?')">
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="10"
+                                class="text-center">
+
+                                No Reviews Found
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
 
             </div>
 
-        </form>
-
-        <!-- Table -->
-
-        <table class="table table-bordered table-striped">
-
-            <thead>
-
-                <tr>
-
-                    <th>ID</th>
-                    <th>Employee</th>
-                    <th>Review Title</th>
-                    <th>Review Date</th>
-                    <th>Reviewed By</th>
-                    <th>Review Period</th>
-                    <th>Rating</th>
-                    <th>Comments</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for review in reviews %}
-
-                <tr>
-
-                    <td>{{ review.id }}</td>
-
-                    <td>
-                        {{ review.employee.first_name }}
-                        {{ review.employee.last_name }}
-                    </td>
-
-                    <td>{{ review.review_title }}</td>
-
-                    <td>{{ review.review_date }}</td>
-
-                    <td>
-                        {{ review.reviewed_by.first_name }}
-                        {{ review.reviewed_by.last_name }}
-                    </td>
-
-                    <td>{{ review.review_period }}</td>
-
-                    <td>{{ review.rating }}</td>
-
-                    <td>{{ review.comments }}</td>
-
-                    <td>
-
-                        <a href="{% url 'update_review' review.id %}"
-                           class="btn btn-warning btn-sm">
-
-                            Edit
-
-                        </a>
-
-                    </td>
-
-                    <td>
-
-                        <a href="{% url 'delete_review' review.id %}"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('Are you sure?')">
-
-                            Delete
-
-                        </a>
-
-                    </td>
-
-                </tr>
-
-                {% empty %}
-
-                <tr>
-
-                    <td colspan="10" class="text-center">
-
-                        No Reviews Found
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
+
+</div>
 
 </body>
 

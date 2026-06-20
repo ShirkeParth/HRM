@@ -1,65 +1,171 @@
+
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Role Dashboard</title>
+
+    <title>Role Management</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background-color:#f4f6f9;
+        }
+
+        .header-box{
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0px 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card{
+            border:none;
+            border-radius:12px;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<div class="container mt-5">
+<div class="container mt-4">
 
-    <h2>Role Dashboard</h2>
-<div class="mb-3">
-    <a href="{% url 'create_role' %}" class="btn btn-primary mb-3">
-        Add Role
-    </a>
-   <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-    Go to Departments
-</a>
-</div>
-    
+    <div class="header-box mb-4">
 
-    <form method="GET" class="mb-3">
-        <input type="text" name="search" placeholder="Search Role" class="form-control">
-    </form>
+        <div class="d-flex justify-content-between align-items-center">
 
-    <table class="table table-bordered">
+            <div>
 
-        <tr>
-            <th>ID</th>
-            <th>Role Name</th>
-            <th>Description</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
+                <h2>Role Management</h2>
 
-        {% for role in roles %}
+                <p class="text-muted mb-0">
+                    Manage employee roles and responsibilities
+                </p>
 
-        <tr>
-            <td>{{ role.id }}</td>
-            <td>{{ role.role_name }}</td>
-            <td>{{ role.description }}</td>
+            </div>
 
-            <td>
-                <a href="{% url 'update_role' role.id %}"
-                   class="btn btn-warning">
-                    Edit
+            <div>
+
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-secondary">
+                    HRM Dashboard
                 </a>
-            </td>
 
-            <td>
-                <a href="{% url 'delete_role' role.id %}"
+                <a href="{% url 'logout' %}"
                    class="btn btn-danger">
-                    Delete
+                    Logout
                 </a>
-            </td>
-        </tr>
 
-        {% endfor %}
+            </div>
 
-    </table>
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h4>Role List</h4>
+
+                <a href="{% url 'create_role' %}"
+                   class="btn btn-primary">
+                    Add Role
+                </a>
+
+            </div>
+
+            <form method="GET" class="mb-3">
+
+                <input type="text"
+                       name="search"
+                       placeholder="Search Role"
+                       class="form-control">
+
+            </form>
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Role Name</th>
+                        <th>Description</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for role in roles %}
+
+                    <tr>
+
+                        <td>{{ role.id }}</td>
+
+                        <td>{{ role.role_name }}</td>
+
+                        <td>{{ role.description }}</td>
+
+                        <td>
+
+                            <a href="{% url 'update_role' role.id %}"
+                               class="btn btn-warning btn-sm">
+
+                                Edit
+
+                            </a>
+
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'delete_role' role.id %}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center">
+
+                            No Roles Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
 </body>
+
 </html>
+```

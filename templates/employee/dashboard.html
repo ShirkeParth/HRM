@@ -1,127 +1,211 @@
-```html
+
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Employee Dashboard</title>
+
+    <title>Employee Management</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+
+    <style>
+
+        body{
+            background-color:#f4f6f9;
+        }
+
+        .header-box{
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0px 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card{
+            border:none;
+            border-radius:12px;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
 <div class="container mt-4">
 
-    <h2 class="mb-4">Employee Dashboard</h2>
+    <div class="header-box mb-4">
 
-    <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center">
 
-        <a href="{% url 'create_employee' %}"
-           class="btn btn-primary">
-            Add Employee
-        </a>
+            <div>
 
-        <a href="{% url 'dashboard' %}"
-           class="btn btn-secondary">
-            Department Dashboard
-        </a>
+                <h2>Employee Management</h2>
 
-        <a href="{% url 'role_dashboard' %}"
-           class="btn btn-success">
-            Role Dashboard
-        </a>
+                <p class="text-muted mb-0">
+                    Manage employee records, departments, roles and reporting managers
+                </p>
+
+            </div>
+
+            <div>
+
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-secondary">
+                    HRM Dashboard
+                </a>
+
+                <a href="{% url 'logout' %}"
+                   class="btn btn-danger">
+                    Logout
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
-    <form method="GET" class="mb-3">
-        <input type="text"
-               name="search"
-               class="form-control"
-               placeholder="Search Employee">
-    </form>
+    <div class="card shadow">
 
-    <table class="table table-bordered table-striped">
+        <div class="card-body">
 
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Department</th>
-                <th>Role</th>
-                <th>Reporting Manager</th>
-                <th>Username</th>
-                <th>Date Of Joining</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
-        <tbody>
+                <h4>Employee List</h4>
 
-        {% for emp in employees %}
-        <tr>
-
-            <td>{{ emp.id }}</td>
-            <td>{{ emp.first_name }}</td>
-            <td>{{ emp.last_name }}</td>
-            <td>{{ emp.email }}</td>
-            <td>{{ emp.mobile }}</td>
-
-            <td>
-                {{ emp.dept.dept_name }}
-            </td>
-
-            <td>
-                {{ emp.role.role_name }}
-            </td>
-
-            <td>
-                {% if emp.reporting_manager %}
-                    {{ emp.reporting_manager.first_name }}
-                    {{ emp.reporting_manager.last_name }}
-                {% else %}
-                    -
-                {% endif %}
-            </td>
-
-            <td>{{ emp.username }}</td>
-
-            <td>{{ emp.date_of_joining }}</td>
-
-            <td>
-                <a href="{% url 'update_employee' emp.id %}"
-                   class="btn btn-warning btn-sm">
-                    Edit
+                <a href="{% url 'create_employee' %}"
+                   class="btn btn-primary">
+                    Add Employee
                 </a>
-            </td>
 
-            <td>
-                <a href="{% url 'delete_employee' emp.id %}"
-                   class="btn btn-danger btn-sm"
-                   onclick="return confirm('Are you sure?')">
-                    Delete
-                </a>
-            </td>
+            </div>
 
-        </tr>
-        {% empty %}
+            <form method="GET" class="mb-3">
 
-        <tr>
-            <td colspan="11" class="text-center">
-                No Employees Found
-            </td>
-        </tr>
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Search Employee">
 
-        {% endfor %}
+            </form>
 
-        </tbody>
+            <div class="table-responsive">
 
-    </table>
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Department</th>
+                            <th>Role</th>
+                            <th>Reporting Manager</th>
+                            <th>Username</th>
+                            <th>Date Joining</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for emp in employees %}
+
+                    <tr>
+
+                        <td>{{ emp.id }}</td>
+
+                        <td>{{ emp.first_name }}</td>
+
+                        <td>{{ emp.last_name }}</td>
+
+                        <td>{{ emp.email }}</td>
+
+                        <td>{{ emp.mobile }}</td>
+
+                        <td>{{ emp.dept.dept_name }}</td>
+
+                        <td>{{ emp.role.role_name }}</td>
+
+                        <td>
+
+                            {% if emp.reporting_manager %}
+
+                                {{ emp.reporting_manager.first_name }}
+                                {{ emp.reporting_manager.last_name }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ emp.username }}</td>
+
+                        <td>{{ emp.date_of_joining }}</td>
+
+                        <td>
+
+                            <a href="{% url 'update_employee' emp.id %}"
+                               class="btn btn-warning btn-sm">
+
+                                Edit
+
+                            </a>
+
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'delete_employee' emp.id %}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="12"
+                            class="text-center">
+
+                            No Employees Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
 </body>
+
 </html>
 ```

@@ -4,6 +4,12 @@ from . import views
 urlpatterns = [
     # Department URLs
     path('', views.dashboard, name='dashboard'),
+
+path(
+    'departments/',
+    views.department_dashboard,
+    name='department_dashboard'
+),
     path('create_department/', views.create_department, name='create_department'),
     path('update_department/<int:id>/', views.update_department, name='update_department'),
     path('delete_department/<int:id>/', views.delete_department, name='delete_department'),

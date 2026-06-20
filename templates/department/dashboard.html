@@ -1,129 +1,142 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
 
-    <title>Department Dashboard</title>
+    <title>Department Management</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
-<body>
+<body class="bg-light">
 
-    <div class="container mt-5">
+<div class="container mt-5">
 
-        <h2>Department Dashboard</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Department Management</h2>
 
-       <div>
-    <a href="{% url 'create_department' %}" class="btn btn-primary">
-        Add Department
-    </a>
+        <div>
 
-    <a href="{% url 'role_dashboard' %}" class="btn btn-success">
-        Go to Role Management
-    </a>
+            <a href="{% url 'dashboard' %}"
+               class="btn btn-secondary">
+                HRM Dashboard
+            </a>
 
-    <a href="{% url 'employee_dashboard' %}" class="btn btn-info">
-        Go to Employee Management
-    </a>
-
-    <a href="{% url 'create_task' %}" class="btn btn-secondary">
-        Create Task
-    </a>
-
-    <a href="{% url 'task_dashboard' %}" class="btn btn-secondary">
-        Task Dashboard
-    </a>
-
-    <a href="{% url 'assign_task' %}" class="btn btn-success">
-        Assign Task
-    </a>
-
-    <a href="{% url 'assignment_dashboard' %}" class="btn btn-info">
-        View Assignments
-    </a>
-
-    <a href="{% url 'review_dashboard' %}" class="btn btn-dark">
-        Performance Reviews
-    </a>
-    <a href="{% url 'leave_dashboard' %}"
-   class="btn btn-dark">
-   Leave Management
-</a>
-
-</div>
-
-            <div class="position-absolute top-0 end-0 m-3">
-
-                {% if request.session.employee_id %}
-                <a href="{% url 'logout' %}" class="btn btn-danger">
-                    Logout
-                </a>
-                {% else %}
-                <a href="{% url 'login' %}" class="btn btn-dark">
-                    Login
-                </a>
-                {% endif %}
-
-            </div>
+            {% if request.session.employee_id %}
+            <a href="{% url 'logout' %}"
+               class="btn btn-danger">
+                Logout
+            </a>
+            {% endif %}
 
         </div>
 
-        <form method="GET">
+    </div>
 
-            <input type="text" name="search" placeholder="Search Department" class="form-control mb-3">
+    <div class="card shadow mb-4">
 
-        </form>
+        <div class="card-body">
 
-        <table class="table table-bordered">
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
+                <h4>Departments</h4>
 
-            {% for d in departments %}
+                <a href="{% url 'create_department' %}"
+                   class="btn btn-primary">
+                    Add Department
+                </a>
 
-            <tr>
+            </div>
 
-                <td>{{ d.dept_id }}</td>
-                <td>{{ d.dept_name }}</td>
-                <td>{{ d.description }}</td>
+            <form method="GET">
 
-                <td>
+                <input type="text"
+                       name="search"
+                       placeholder="Search Department"
+                       class="form-control mb-3">
 
-                    <a href="{% url 'update_department' d.dept_id %}" class="btn btn-warning">
+            </form>
 
-                        Edit
+            <table class="table table-bordered table-hover">
 
-                    </a>
+                <thead class="table-dark">
 
-                </td>
+                    <tr>
+                        <th>ID</th>
+                        <th>Department Name</th>
+                        <th>Description</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
 
-                <td>
+                </thead>
 
-                    <a href="{% url 'delete_department' d.dept_id %}" class="btn btn-danger">
+                <tbody>
 
-                        Delete
+                    {% for d in departments %}
 
-                    </a>
+                    <tr>
 
-                </td>
+                        <td>{{ d.dept_id }}</td>
 
-            </tr>
+                        <td>{{ d.dept_name }}</td>
 
-            {% endfor %}
+                        <td>{{ d.description }}</td>
 
-        </table>
+                        <td>
+
+                            <a href="{% url 'update_department' d.dept_id %}"
+                               class="btn btn-warning btn-sm">
+
+                                Edit
+
+                            </a>
+
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'delete_department' d.dept_id %}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5"
+                            class="text-center">
+
+                            No Departments Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
+
+</div>
 
 </body>
 
 </html>
+```
